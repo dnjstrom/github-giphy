@@ -1,0 +1,20 @@
+{
+  "name": "Github Giphy",
+  "version": "1.0",
+  "description": "Easily insert gifs from giphy.com on Github",
+  "manifest_version": 2,
+  "permissions": [
+    "https://api.giphy.com/v1/*"
+  ],
+  "background": {
+    "scripts": ["dist/background.js"],
+    "peristent": false
+  },
+  "content_scripts": [
+    {
+      "js": ["dist/content.js"],
+      "matches": ["https://github.com/*"],
+      "run_at": "document_idle"
+    }
+  ]
+}

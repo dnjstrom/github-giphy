@@ -1,0 +1,32 @@
+{
+  "name": "github-giphy",
+  "version": "1.0.0",
+  "description": "A chrome extension to add some sparkle to your Github communication experience!",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "webpack",
+    "build:watch": "webpack --watch"
+  },
+  "keywords": [],
+  "author": "Daniel Ström",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/plugin-transform-modules-commonjs": "^7.1.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "@types/jest": "^23.3.9",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.4",
+    "fetch-ponyfill": "^6.0.2",
+    "isomorphic-fetch": "^2.2.1",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.4",
+    "typescript": "^3.1.6",
+    "webpack": "^4.26.0",
+    "webpack-cli": "^3.1.2"
+  }
+}
