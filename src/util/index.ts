@@ -24,9 +24,8 @@ export const insertText = (text: string, textArea: HTMLTextAreaElement) => {
   const after = value.substring(selectionEnd)
   textArea.value = before + text + after
 
-  const cursorPos = selectionStart + text.length
-  textArea.selectionStart = cursorPos
-  textArea.selectionEnd = cursorPos
+  textArea.selectionStart = selectionStart
+  textArea.selectionEnd = selectionStart + text.length
 
   textArea.focus()
 }

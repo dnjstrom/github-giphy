@@ -2,7 +2,9 @@ import { MemCache } from "./index"
 import { times } from "../util/index"
 
 test("Cache items can be set and get", () => {
-  const cache = new MemCache({ cacheDurationInMillis: Infinity })
+  const cache = new MemCache<string, number>({
+    cacheDurationInMillis: Infinity,
+  })
   cache.set("foo", 42)
   expect(cache.get("foo")).toBe(42)
 })

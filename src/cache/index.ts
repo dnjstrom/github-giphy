@@ -1,8 +1,8 @@
 const eightHours = 8 * 60 * 60 * 1000 // 8 hours
 
-interface Entry {
+interface Entry<D> {
   expire: number
-  data: any
+  data: D
 }
 
 interface Options {
@@ -10,8 +10,8 @@ interface Options {
   maxCacheSize?: number
 }
 
-export class MemCache {
-  store: Map<any, Entry>
+export class MemCache<K, V> {
+  store: Map<K, Entry<V>>
   cacheDurationInMillis: number
   maxCacheSize: number
 
@@ -29,7 +29,7 @@ export class MemCache {
     return this.store.entries()
   }
 
-  get(key: any) {
+  get(key: K) {
     const entry = this.store.get(key)
 
     if (!entry) {
@@ -42,7 +42,7 @@ export class MemCache {
     return entry.data
   }
 
-  set(key: any, value: any) {
+  set(key: K, value: V) {
     this.store.set(key, {
       expire: Date.now() + this.cacheDurationInMillis,
       data: value,

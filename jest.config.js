@@ -84,13 +84,21 @@ module.exports = {
 
   // A preset that is used as a base for Jest's configuration
   // preset: null,
-  preset: "ts-jest/presets/js-with-babel",
+  preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: null,
 
   // Use this configuration option to add custom reporters to Jest
   // reporters: undefined,
+  reporters: [
+    [
+      "jest-nyan-reporter",
+      {
+        suppressErrorReporter: false,
+      },
+    ],
+  ],
 
   // Automatically reset mock state between every test
   // resetMocks: false,
@@ -136,7 +144,7 @@ module.exports = {
   // The glob patterns Jest uses to detect test files
   testMatch: [
     //   "**/__tests__/**/*.js?(x)",
-    "**/?(spec|test).(js|ts)?(x)",
+    "**/?(spec|test).ts?(x)",
   ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped

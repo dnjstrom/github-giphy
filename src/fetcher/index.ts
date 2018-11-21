@@ -3,27 +3,40 @@ import "isomorphic-fetch"
 import { MemCache } from "../cache/index"
 
 export class Fetcher {
-  cache: any
+  reponseCache: MemCache<string, any>
+  pendingRequests: Map<String, Promise<Response>>
 
   constructor() {
-    this.cache = new MemCache()
+    this.reponseCache = new MemCache()
+    this.pendingRequests = new Map()
   }
 
   async fetch(uri: string) {
-    const cached = this.cache.get(uri)
+    const cached = this.reponseCache.get(uri)
 
     if (cached) {
       return cached
     }
 
-    const response = await fetch(uri)
+    let jsonResponse
+    const pendingRequest = this.pendingRequests.get(uri)
 
-    if (!response.ok) {
-      throw new Error(`Fetch error - ${response.ok}`)
+    if (pendingRequest) {
+      return pendingRequest
     }
 
-    const json = await response.json()
+    const request = fetch(uri).then(response => {
+      if (!response.ok) {
+        throw new Error(`Fetch error for url "${uri}"`)
+      }
 
-    return this.cache.set(uri, json)
+      return response.json()
+    })
+
+    this.pendingRequests.set(uri, request)
+    jsonResponse = await request
+    this.pendingRequests.delete(uri)
+
+    return this.reponseCache.set(uri, jsonResponse)
   }
 }
