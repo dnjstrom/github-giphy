@@ -84,6 +84,7 @@ module.exports = {
 
   // A preset that is used as a base for Jest's configuration
   // preset: null,
+  preset: "ts-jest/presets/js-with-babel",
 
   // Run tests from one or more projects
   // projects: null,
@@ -135,7 +136,7 @@ module.exports = {
   // The glob patterns Jest uses to detect test files
   testMatch: [
     //   "**/__tests__/**/*.js?(x)",
-    "**/?(spec|test).js?(x)",
+    "**/?(spec|test).(js|ts)?(x)",
   ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped

@@ -1,5 +1,5 @@
 import "isomorphic-fetch"
-import { Fetcher } from "."
+import { Fetcher } from "./index"
 
 describe("Fetcher", () => {
   beforeEach(() => {

@@ -1,5 +1,5 @@
-import { MemCache } from "."
-import { times } from "../util"
+import { MemCache } from "./index"
+import { times } from "../util/index"
 
 test("Cache items can be set and get", () => {
   const cache = new MemCache({ cacheDurationInMillis: Infinity })

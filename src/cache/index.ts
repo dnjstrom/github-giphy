@@ -1,10 +1,24 @@
 const eightHours = 8 * 60 * 60 * 1000 // 8 hours
 
+interface Entry {
+  expire: number
+  data: any
+}
+
+interface Options {
+  cacheDurationInMillis?: number
+  maxCacheSize?: number
+}
+
 export class MemCache {
-  constructor(options = {}) {
+  store: Map<any, Entry>
+  cacheDurationInMillis: number
+  maxCacheSize: number
+
+  constructor({ cacheDurationInMillis, maxCacheSize }: Options = {}) {
     this.store = new Map()
-    this.cacheDurationInMillis = options.cacheDurationInMillis || eightHours
-    this.maxCacheSize = options.maxCacheSize || 200
+    this.cacheDurationInMillis = cacheDurationInMillis || eightHours
+    this.maxCacheSize = maxCacheSize || 200
   }
 
   get size() {
@@ -15,7 +29,7 @@ export class MemCache {
     return this.store.entries()
   }
 
-  get(key) {
+  get(key: any) {
     const entry = this.store.get(key)
 
     if (!entry) {
@@ -28,7 +42,7 @@ export class MemCache {
     return entry.data
   }
 
-  set(key, value) {
+  set(key: any, value: any) {
     this.store.set(key, {
       expire: Date.now() + this.cacheDurationInMillis,
       data: value,

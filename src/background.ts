@@ -1,17 +1,17 @@
 import "@babel/polyfill"
-import { Fetcher } from "./fetcher"
+import { Fetcher } from "./fetcher/index"
 
 const apiBase = "https://api.giphy.com/v1"
 const apiKey = "dc6zaTOxFJmzC"
 const fetcher = new Fetcher()
 
-const performSearch = async term => {
+const performSearch = async (term: string): Promise<Image[]> => {
   const encodedTerm = encodeURIComponent(`${term}`.trim())
   const uri = `${apiBase}/gifs/search?q=${encodedTerm}&api_key=${apiKey}`
 
   try {
     const json = await fetcher.fetch(uri)
-    return json.data.map(image => ({
+    return json.data.map((image: any) => ({
       src: image.images.original.webp,
       preview: image.images.fixed_height.webp,
       title: image.title,
@@ -22,7 +22,11 @@ const performSearch = async term => {
   }
 }
 
-const messageListener = (data, sender, cb) => {
+const messageListener = (
+  data: QueryMessage,
+  sender: any,
+  cb: SearchCallback
+) => {
   performSearch(data.query)
     .then(cb)
     .catch(err => {

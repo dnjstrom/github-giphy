@@ -1,13 +1,15 @@
 import "isomorphic-fetch"
 
-import { MemCache } from "../cache"
+import { MemCache } from "../cache/index"
 
 export class Fetcher {
+  cache: any
+
   constructor() {
     this.cache = new MemCache()
   }
 
-  async fetch(uri) {
+  async fetch(uri: string) {
     const cached = this.cache.get(uri)
 
     if (cached) {

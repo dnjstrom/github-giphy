@@ -1,20 +1,20 @@
-const {
+import {
   bind,
   htmlToElement,
   insertText,
   getSelected,
   randomN,
   times,
-} = require(".")
+} from "./index"
 
-const getTextArea = text => {
+const getTextArea = (text: string) => {
   const txtArea = document.createElement("textarea")
   txtArea.value = text
   return txtArea
 }
 
 describe("bind", () => {
-  const f = (a, b, c) => a + b + c
+  const f = (a: number, b: number, c: number) => a + b + c
 
   test("Returns a function", () => {
     const g = bind(f, 1, 2)
@@ -32,7 +32,7 @@ describe("bind", () => {
 describe("htmlToElement", () => {
   test("Returns a node with the same outer html", () => {
     const html = '<div class="foo">bar</div>'
-    const result = htmlToElement(html)
+    const result = <HTMLElement>htmlToElement(html)
     expect(result.outerHTML).toEqual(html)
   })
 })
@@ -81,7 +81,7 @@ describe("randomN", () => {
     const range = 3
     times(10)
       .map(() => randomN(range))
-      .forEach(value => {
+      .forEach((value: number) => {
         expect(value).toBeGreaterThanOrEqual(0)
         expect(value).toBeLessThan(range)
       })

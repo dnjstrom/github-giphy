@@ -1,15 +1,31 @@
 import "@babel/polyfill"
-import { bind, htmlToElement, insertText, getSelected, randomN } from "./util"
+import {
+  bind,
+  htmlToElement,
+  insertText,
+  getSelected,
+  randomN,
+} from "./util/index"
 import { giphyButtonHtml } from "./util/constants"
 
-const sendMessage = (message, handler) => {
+const sendMessage = (message: QueryMessage, handler: SearchCallback) => {
   chrome.runtime.sendMessage(message, handler)
 }
 
-const clickListener = evt => {
+const clickListener = (evt: Event) => {
   evt.preventDefault()
+  const target = evt.target
 
-  const form = evt.target.closest("form")
+  if (!target) {
+    throw new Error("Click listener called with no target")
+  }
+
+  const form = (target as HTMLElement).closest("form")
+
+  if (!form) {
+    throw new Error("Couldn't find a parent form of click target")
+  }
+
   const textAreas = form.querySelectorAll("textarea")
 
   if (textAreas.length === 0) {
