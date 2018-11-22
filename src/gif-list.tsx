@@ -98,6 +98,9 @@ export class GifList extends Component<GifListProps, GifListState> {
           autofocus
           value={this.state.query}
           onInput={this.onInput}
+          onSubmit={evt => {
+            evt.preventDefault()
+          }}
         />
         <div
           style={{
