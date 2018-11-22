@@ -11,6 +11,7 @@ interface GifListState {
 }
 
 interface GifListProps {
+  isVisible: boolean
   onSelection: (image: Image) => void
   onFetchMore: (query: string, offset: number) => Promise<Image[]>
 }
@@ -83,8 +84,21 @@ export class GifList extends Component<GifListProps, GifListState> {
     const gifs = searches[query] || []
 
     return (
-      <div>
-        <input type="text" value={this.state.query} onInput={this.onInput} />
+      <div
+        style={
+          this.props.isVisible
+            ? {}
+            : {
+                display: "none",
+              }
+        }
+      >
+        <input
+          type="text"
+          autofocus
+          value={this.state.query}
+          onInput={this.onInput}
+        />
         <div
           style={{
             display: "flex",

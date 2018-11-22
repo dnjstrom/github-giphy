@@ -14,20 +14,15 @@ const sendMessage = (message: QueryMessage, handler: SearchCallback) => {
   chrome.runtime.sendMessage(message, handler)
 }
 
-const clickListener = (evt: Event) => {}
+const gifListRootClass = "github-giphy-gif-list-root"
+let shouldShowGifList = false
 
-// document.querySelectorAll(".toolbar-group:last-child").forEach(element => {
-//   const giphyButton = htmlToElement(giphyButtonHtml)
-//   giphyButton.addEventListener("click", clickListener)
-//   element.append(giphyButton)
-// })
-
-document.querySelectorAll(".write-content").forEach(element => {
-  const root = document.createElement("div")
+const renderGifList = (root: Element) =>
   render(
     <GifList
+      isVisible={shouldShowGifList}
       onSelection={image => {
-        const form = element.closest("form")
+        const form = root.closest("form")
 
         if (!form) {
           throw new Error("Couldn't find a parent form of click target")
@@ -56,6 +51,54 @@ document.querySelectorAll(".write-content").forEach(element => {
     />,
     root
   )
-  element.append(root)
-  console.log(root)
-})
+
+const replaceGifList = () => {
+  let roots = Array.from(document.querySelectorAll(`.${gifListRootClass}`))
+
+  if (!roots.length) {
+    roots = Array.from(document.querySelectorAll(".write-content")).map(
+      element => {
+        const root = document.createElement("div")
+        root.classList.add(gifListRootClass)
+        element.append(root)
+        return root as Element
+      }
+    )
+  }
+
+  roots.forEach(root => {
+    root.innerHTML = ""
+  })
+
+  roots.forEach(renderGifList)
+}
+
+const renderGifButtons = () => {
+  document.querySelectorAll(".toolbar-group:last-child").forEach(element => {
+    const giphyButton = htmlToElement(giphyButtonHtml)
+    giphyButton.addEventListener("click", () => {
+      shouldShowGifList = !shouldShowGifList
+
+      replaceGifList()
+
+      const form = element.closest("form")
+
+      if (!form) {
+        throw new Error("Couldn't find form parent of gif button")
+      }
+
+      const input = shouldShowGifList
+        ? form.querySelector(`.${gifListRootClass} input`)
+        : form.querySelector("textarea.comment-form-textarea")
+
+      if (!input) {
+        throw new Error("Couldn't find input of gif list")
+      }
+
+      ;(input as HTMLElement).focus()
+    })
+    element.append(giphyButton)
+  })
+}
+
+renderGifButtons()
