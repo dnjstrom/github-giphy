@@ -34,4 +34,6 @@ export const insertText = (text: string, textArea: HTMLTextAreaElement) => {
 
 export const randomN = (n: number) => Math.floor(Math.random() * n)
 
+export const pickRandom = (list: any[]) => list[randomN(list.length)]
+
 export const times = (n: number) => Array.from(new Array(n))

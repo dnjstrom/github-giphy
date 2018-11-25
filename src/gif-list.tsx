@@ -1,4 +1,5 @@
 import { h, Component } from "preact"
+import { pickRandom } from "./util"
 
 interface SearchList {
   [query: string]: Set<Image> | undefined
@@ -18,9 +19,29 @@ interface GifListProps {
 
 const DEBOUNCE_DURATION = 300
 
+const defaultQueries = [
+  "amazing",
+  "approve",
+  "approved",
+  "awesome",
+  "chest bump",
+  "clap",
+  "cool",
+  "congrats",
+  "fist bump",
+  "high five",
+  "neat",
+  "nice",
+  "ok",
+  "super",
+  "well done",
+  "wow",
+  "yes",
+]
+
 export class GifList extends Component<GifListProps, GifListState> {
   state = {
-    query: "approved",
+    query: pickRandom(defaultQueries),
     searches: {} as SearchList,
     isLoading: false,
   }
