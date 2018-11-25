@@ -11,10 +11,11 @@ const performSearch = async (term: string): Promise<Image[]> => {
 
   try {
     const json = await fetcher.fetch(uri)
+    console.log(json)
     return json.data.map((image: any) => ({
       src: image.images.original.webp,
       preview: image.images.fixed_height.webp,
-      title: image.title,
+      title: image.title || image.slug,
     }))
   } catch (err) {
     console.warn(err)

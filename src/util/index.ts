@@ -1,5 +1,7 @@
 export const bind = (f: Function, ...params: any[]) => f.bind(null, ...params)
 
+export const sequence = (...fs: Function[]) => () => fs.forEach(f => f())
+
 export const htmlToElement = (html: string): any => {
   const template = document.createElement("template")
   template.innerHTML = html

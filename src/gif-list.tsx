@@ -83,16 +83,36 @@ export class GifList extends Component<GifListProps, GifListState> {
     const { query, searches } = this.state
     const gifs = searches[query] || []
 
+    if (!this.props.isVisible) {
+      return null
+    }
+
     return (
-      <div
-        style={
-          this.props.isVisible
-            ? {}
-            : {
-                display: "none",
-              }
-        }
-      >
+      <div>
+        <div
+          style={{
+            display: "flex",
+            "overflow-x": "auto",
+            background: "#fafbfc",
+            padding: "8px",
+            margin: "8px",
+            border: "1px solid lightgrey",
+            "border-radius": "3px",
+            "min-height": "200px",
+          }}
+        >
+          {this.state.isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            Array.from(gifs.values()).map((img: Image) => (
+              <img
+                style={{ "margin-right": "10px" }}
+                src={img.preview}
+                onClick={this.onImageClick(img)}
+              />
+            ))
+          )}
+        </div>
         <input
           type="text"
           autofocus
@@ -101,21 +121,11 @@ export class GifList extends Component<GifListProps, GifListState> {
           onSubmit={evt => {
             evt.preventDefault()
           }}
-        />
-        <div
           style={{
-            display: "flex",
-            "overflow-x": "auto",
+            margin: "0 8px 8px",
+            padding: "8px",
           }}
-        >
-          {this.state.isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            Array.from(gifs.values()).map((img: Image) => (
-              <img src={img.preview} onClick={this.onImageClick(img)} />
-            ))
-          )}
-        </div>
+        />
       </div>
     )
   }

@@ -6,18 +6,27 @@ import {
   insertText,
   getSelected,
   randomN,
+  sequence,
 } from "./util/index"
-import { giphyButtonHtml } from "./util/constants"
+import {
+  giphyButtonHtml,
+  gifListRootClass,
+  gifButtonClass,
+  gifButtonParentPath,
+  gifListParentPath,
+} from "./util/constants"
 import { GifList } from "./gif-list"
 
 const sendMessage = (message: QueryMessage, handler: SearchCallback) => {
   chrome.runtime.sendMessage(message, handler)
 }
 
-const gifListRootClass = "github-giphy-gif-list-root"
 let shouldShowGifList = false
 
-const renderGifList = (root: Element) =>
+const renderGifList = (parent: Element) => {
+  const root = document.createElement("div")
+  root.classList.add(gifListRootClass)
+
   render(
     <GifList
       isVisible={shouldShowGifList}
@@ -41,7 +50,6 @@ const renderGifList = (root: Element) =>
         textAreas.forEach(bind(insertText, `![${image.title}](${image.src})`))
       }}
       onFetchMore={(query, offset) => {
-        console.log(query, offset)
         return new Promise((resolve, reject) => {
           sendMessage({ query }, images => {
             resolve(images)
@@ -52,40 +60,37 @@ const renderGifList = (root: Element) =>
     root
   )
 
-const replaceGifList = () => {
-  let roots = Array.from(document.querySelectorAll(`.${gifListRootClass}`))
-
-  if (!roots.length) {
-    roots = Array.from(document.querySelectorAll(".write-content")).map(
-      element => {
-        const root = document.createElement("div")
-        root.classList.add(gifListRootClass)
-        element.append(root)
-        return root as Element
-      }
-    )
-  }
-
-  roots.forEach(root => {
-    root.innerHTML = ""
-  })
-
-  roots.forEach(renderGifList)
+  parent.append(root)
 }
 
 const renderGifButtons = () => {
-  document.querySelectorAll(".toolbar-group:last-child").forEach(element => {
+  const buttonParents = document.querySelectorAll(gifButtonParentPath)
+
+  for (let toolbar of buttonParents) {
     const giphyButton = htmlToElement(giphyButtonHtml)
+
     giphyButton.addEventListener("click", () => {
       shouldShowGifList = !shouldShowGifList
 
-      replaceGifList()
-
-      const form = element.closest("form")
+      const form = toolbar.closest("form")
 
       if (!form) {
         throw new Error("Couldn't find form parent of gif button")
       }
+
+      const gifList = form.querySelector(`.${gifListRootClass}`)
+
+      if (gifList) {
+        gifList.remove()
+      }
+
+      const gifListParent = form.querySelector(gifListParentPath)
+
+      if (!gifListParent) {
+        throw new Error("Couldn't find Gif list parent element")
+      }
+
+      renderGifList(gifListParent)
 
       const input = shouldShowGifList
         ? form.querySelector(`.${gifListRootClass} input`)
@@ -97,8 +102,45 @@ const renderGifButtons = () => {
 
       ;(input as HTMLElement).focus()
     })
-    element.append(giphyButton)
-  })
+
+    toolbar.appendChild(giphyButton)
+  }
 }
 
-renderGifButtons()
+const removeGifButtons = () => {
+  for (const button of document.querySelectorAll(`.${gifButtonClass}`)) {
+    button.remove()
+  }
+}
+
+const removeGifLists = () => {
+  let roots = document.querySelectorAll(`.${gifListRootClass}`)
+
+  for (const list of roots) {
+    list.remove()
+  }
+}
+
+const resetState = () => {
+  shouldShowGifList = false
+}
+
+const renderUi = sequence(
+  resetState,
+  removeGifButtons,
+  removeGifLists,
+  renderGifButtons
+)
+
+renderUi()
+
+document.addEventListener(
+  "pjax:start",
+  sequence(resetState, removeGifButtons, removeGifLists)
+)
+
+new MutationObserver(renderUi).observe(document.body, {
+  attributes: true,
+  childList: true,
+  characterData: true,
+})
